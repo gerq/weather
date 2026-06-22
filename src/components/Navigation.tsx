@@ -1,0 +1,121 @@
+"use client";
+
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { CloudSun, Map as MapIcon, Heart, Home } from "lucide-react";
+
+const navItems = [
+  { href: "/", label: "Időjárás", icon: Home },
+  { href: "/map", label: "Térkép", icon: MapIcon },
+  { href: "/health", label: "Egészség", icon: Heart },
+];
+
+export default function Navigation() {
+  const pathname = usePathname();
+
+  return (
+    <>
+      {/* Desktop sidebar */}
+      <nav className="hidden md:flex fixed left-0 top-0 h-full w-20 flex-col items-center gap-6 py-8 bg-white/80 dark:bg-gray-900/80 backdrop-blur-lg border-r border-gray-200 dark:border-gray-700 z-40">
+        <Link
+          href="/"
+          className="flex items-center justify-center w-12 h-12 rounded-xl bg-gradient-to-br from-blue-500 to-purple-600 shadow-lg"
+        >
+          <CloudSun className="w-7 h-7 text-white" />
+        </Link>
+        <div className="flex flex-col gap-3 flex-1">
+          {navItems.map((item) => {
+            const isActive = pathname === item.href;
+            return (
+              <Link
+                key={item.href}
+                href={item.href}
+                className={`flex flex-col items-center gap-1 px-3 py-3 rounded-xl transition-all ${
+                  isActive
+                    ? "bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400"
+                    : "text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800"
+                }`}
+                title={item.label}
+              >
+                <item.icon className="w-5 h-5" />
+                <span className="text-[10px] font-medium">{item.label}</span>
+              </Link>
+            );
+          })}
+        </div>
+      </nav>
+
+      {/* Mobile bottom nav */}
+      <nav className="md:hidden fixed bottom-0 left-0 right-0 z-40 bg-white/90 dark:bg-gray-900/90 backdrop-blur-lg border-t border-gray-200 dark:border-gray-700 safe-area-bottom">
+        <div className="flex items-center justify-around py-2 px-4">
+          <Link
+            href="/"
+            className="flex flex-col items-center gap-0.5 px-4 py-1 min-w-0"
+          >
+            <Home
+              className={`w-5 h-5 ${
+                pathname === "/"
+                  ? "text-blue-500"
+                  : "text-gray-400 dark:text-gray-500"
+              }`}
+            />
+            <span
+              className={`text-[10px] font-medium ${
+                pathname === "/"
+                  ? "text-blue-500"
+                  : "text-gray-400 dark:text-gray-500"
+              }`}
+            >
+              Időjárás
+            </span>
+          </Link>
+          <Link
+            href="/map"
+            className="flex flex-col items-center gap-0.5 px-4 py-1 min-w-0"
+          >
+            <MapIcon
+              className={`w-5 h-5 ${
+                pathname === "/map"
+                  ? "text-blue-500"
+                  : "text-gray-400 dark:text-gray-500"
+              }`}
+            />
+            <span
+              className={`text-[10px] font-medium ${
+                pathname === "/map"
+                  ? "text-blue-500"
+                  : "text-gray-400 dark:text-gray-500"
+              }`}
+            >
+              Térkép
+            </span>
+          </Link>
+          <Link
+            href="/health"
+            className="flex flex-col items-center gap-0.5 px-4 py-1 min-w-0"
+          >
+            <Heart
+              className={`w-5 h-5 ${
+                pathname === "/health"
+                  ? "text-blue-500"
+                  : "text-gray-400 dark:text-gray-500"
+              }`}
+            />
+            <span
+              className={`text-[10px] font-medium ${
+                pathname === "/health"
+                  ? "text-blue-500"
+                  : "text-gray-400 dark:text-gray-500"
+              }`}
+            >
+              Egészség
+            </span>
+          </Link>
+        </div>
+      </nav>
+
+      {/* Spacer for mobile bottom nav */}
+      <div className="md:hidden h-16" />
+    </>
+  );
+}

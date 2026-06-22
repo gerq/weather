@@ -1,65 +1,93 @@
-import Image from "next/image";
+"use client";
+
+import { useWeather } from "@/hooks/useWeather";
+import CurrentWeather from "@/components/CurrentWeather";
+import HourlyForecast from "@/components/HourlyForecast";
+import DailyForecast from "@/components/DailyForecast";
+import DressingTips from "@/components/DressingTips";
+import { Loader2, AlertCircle, CloudSun } from "lucide-react";
 
 export default function Home() {
-  return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
+  const {
+    weather,
+    dressingTips,
+    loading,
+    error,
+    location,
+    setLocation,
+    isDaytime,
+    refresh,
+  } = useWeather();
+
+  if (loading && !weather) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-center space-y-4">
+          <CloudSun className="w-16 h-16 text-blue-400 animate-pulse mx-auto" />
+          <Loader2 className="w-8 h-8 text-blue-500 animate-spin mx-auto" />
+          <p className="text-gray-500 dark:text-gray-400 animate-pulse">
+            Időjárás adatok betöltése...
           </p>
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="min-h-screen flex items-center justify-center p-4">
+        <div className="text-center space-y-4 max-w-md">
+          <AlertCircle className="w-16 h-16 text-red-400 mx-auto" />
+          <h2 className="text-xl font-semibold text-gray-800 dark:text-white">
+            Hiba történt
+          </h2>
+          <p className="text-gray-500 dark:text-gray-400">{error}</p>
+          <p className="text-sm text-gray-400 dark:text-gray-500">
+            Ellenőrizd, hogy az OpenWeatherMap API kulcs be van-e állítva a
+            .env.local fájlban!
+          </p>
+          <button
+            onClick={refresh}
+            className="px-6 py-3 rounded-xl bg-blue-500 text-white hover:bg-blue-600 transition-colors font-medium"
           >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
+            Újrapróbálkozás
+          </button>
         </div>
-      </main>
+      </div>
+    );
+  }
+
+  if (!weather) return null;
+
+  return (
+    <div className="min-h-screen">
+      {/* Hero section with current weather */}
+      <div className="p-4 md:p-6 space-y-4 max-w-4xl mx-auto">
+        <div className="animate-fade-in">
+          <CurrentWeather
+            weather={weather}
+            loading={loading}
+            isDaytime={isDaytime}
+            onRefresh={refresh}
+            onLocationChange={setLocation}
+          />
+        </div>
+
+        {/* Hourly + Dressing tips row */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+          <div className="lg:col-span-2 animate-fade-in-delay-1 h-full">
+            <HourlyForecast hourly={weather.hourly} />
+          </div>
+          <div className="animate-fade-in-delay-1">
+            <DressingTips tips={dressingTips} />
+          </div>
+        </div>
+
+        {/* Daily forecast */}
+        <div className="animate-fade-in-delay-2">
+          <DailyForecast daily={weather.daily} />
+        </div>
+      </div>
     </div>
   );
 }

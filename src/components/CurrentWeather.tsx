@@ -1,0 +1,99 @@
+"use client";
+
+import { MapPin, RefreshCw, Loader2 } from "lucide-react";
+import type { WeatherData } from "@/types/weather";
+import { formatTemp, getWeatherIconUrl, getWeatherDescription, formatTime, getWeatherBgClass } from "@/lib/utils";
+import SearchBar from "./SearchBar";
+
+interface CurrentWeatherProps {
+  weather: WeatherData;
+  loading: boolean;
+  isDaytime: boolean;
+  onRefresh: () => void;
+  onLocationChange: (lat: number, lon: number, name: string) => void;
+}
+
+export default function CurrentWeather({ weather, loading, isDaytime, onRefresh, onLocationChange }: CurrentWeatherProps) {
+  const { current, location } = weather;
+  const bgClass = getWeatherBgClass(current.weather.id);
+
+  return (
+    <div className={`relative overflow-hidden rounded-3xl p-6 md:p-8 bg-gradient-to-br ${bgClass} text-white shadow-2xl`}>
+      {/* Background decoration */}
+      <div className="absolute top-0 right-0 w-64 h-64 bg-white/5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2" />
+      <div className="absolute bottom-0 left-0 w-48 h-48 bg-black/10 rounded-full blur-3xl translate-y-1/2 -translate-x-1/2" />
+
+      {/* Header */}
+      <div className="relative z-10 space-y-6">
+        {/* Top bar */}
+        <div className="flex items-center justify-between gap-4">
+          <div className="flex items-center gap-2 min-w-0">
+            <MapPin className="w-5 h-5 shrink-0" />
+            <h1 className="text-lg font-semibold truncate">{location.name}</h1>
+          </div>
+          <div className="flex items-center gap-2 shrink-0">
+            <button
+              onClick={onRefresh}
+              disabled={loading}
+              className="p-2 rounded-full bg-white/20 hover:bg-white/30 transition-all disabled:opacity-50"
+            >
+              <RefreshCw className={`w-4 h-4 ${loading ? "animate-spin" : ""}`} />
+            </button>
+          </div>
+        </div>
+
+        {/* Search */}
+        <SearchBar onSelectLocation={onLocationChange} />
+
+        {/* Main weather info */}
+        <div className="flex items-center justify-between">
+          <div>
+            <div className="text-6xl md:text-7xl font-light tracking-tighter">
+              {formatTemp(current.temp)}
+            </div>
+            <p className="text-lg text-white/80 mt-1">
+              Hőérzet: {formatTemp(current.feels_like)}
+            </p>
+            <p className="text-base text-white/90 mt-2 font-medium">
+              {getWeatherDescription(current.weather.description)}
+            </p>
+          </div>
+          <img
+            src={getWeatherIconUrl(current.weather.icon)}
+            alt={current.weather.description}
+            className="w-28 h-28 md:w-32 md:h-32 -mr-2 drop-shadow-lg"
+          />
+        </div>
+
+        {/* Details grid */}
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+          <DetailCard label="Páratartalom" value={`${current.humidity}%`} />
+          <DetailCard label="Szél" value={`${Math.round(current.wind_speed)} km/h`} />
+          <DetailCard label="Légnyomás" value={`${current.pressure} hPa`} />
+          <DetailCard label="Felhőzet" value={`${current.clouds}%`} />
+        </div>
+
+        {/* Sun info */}
+        <div className="flex items-center justify-center gap-8 text-sm text-white/80">
+          <div className="flex items-center gap-2">
+            <span>🌅</span>
+            <span>Napkelte: {formatTime(current.sunrise)}</span>
+          </div>
+          <div className="flex items-center gap-2">
+            <span>🌇</span>
+            <span>Napnyugta: {formatTime(current.sunset)}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function DetailCard({ label, value }: { label: string; value: string }) {
+  return (
+    <div className="bg-white/15 backdrop-blur-sm rounded-xl p-3 text-center">
+      <p className="text-xs text-white/70 mb-1">{label}</p>
+      <p className="text-lg font-semibold">{value}</p>
+    </div>
+  );
+}
