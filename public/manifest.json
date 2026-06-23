@@ -1,6 +1,6 @@
 {
-  "name": "Időjárás - Weather App",
-  "short_name": "Időjárás",
+  "name": "gWeather",
+  "short_name": "gWeather",
   "description": "Modern magyar időjárás alkalmazás előrejelzésekkel, térképekkel és orvosmeteorológiával",
   "start_url": "/",
   "display": "standalone",

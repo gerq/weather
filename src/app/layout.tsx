@@ -10,13 +10,13 @@ import type { Language } from "@/lib/i18n/translations";
 import HtmlLangSetter from "@/components/HtmlLangSetter";
 
 export const metadata: Metadata = {
-  title: "Időjárás - Weather App",
+  title: "gWeather",
   description: "Modern időjárás alkalmazás előrejelzésekkel, térképekkel és orvosmeteorológiával",
   manifest: "/manifest.json",
   appleWebApp: {
     capable: true,
     statusBarStyle: "default",
-    title: "Időjárás",
+    title: "gWeather",
   },
   other: {
     "mobile-web-app-capable": "yes",

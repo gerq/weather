@@ -21,10 +21,11 @@ export default function Navigation() {
   return (
     <>
       {/* Desktop sidebar */}
-      <nav className="hidden md:flex fixed left-0 top-0 h-full w-20 flex-col items-center gap-6 py-8 bg-white/80 dark:bg-gray-900/80 backdrop-blur-lg border-r border-gray-200 dark:border-gray-700 z-40">
-        <Link
+      <nav className="hidden md:flex fixed left-0 top-0 h-full w-20 flex-col items-center gap-6 py-8 bg-white/80 dark:bg-gray-900/80 backdrop-blur-lg border-r border-gray-200 dark:border-gray-700 z-40">          <Link
           href="/"
           className="flex items-center justify-center w-12 h-12 rounded-xl bg-gradient-to-br from-blue-500 to-purple-600 shadow-lg"
+          title="gWeather"
+          aria-label="gWeather"
         >
           <CloudSun className="w-7 h-7 text-white" />
         </Link>
@@ -49,6 +50,20 @@ export default function Navigation() {
           })}
         </div>
       </nav>
+
+      {/* Mobile top header */}
+      <div className="md:hidden fixed top-0 left-0 right-0 z-40 bg-white/90 dark:bg-gray-900/90 backdrop-blur-lg border-b border-gray-200 dark:border-gray-700 safe-area-top">
+        <div className="flex items-center justify-between px-4 py-3">
+          <div className="flex items-center gap-2">
+            <div className="flex items-center justify-center w-8 h-8 rounded-lg bg-gradient-to-br from-blue-500 to-purple-600 shadow">
+              <CloudSun className="w-5 h-5 text-white" />
+            </div>
+            <span className="text-base font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent dark:from-blue-400 dark:to-purple-400">
+              gWeather
+            </span>
+          </div>
+        </div>
+      </div>
 
       {/* Mobile bottom nav */}
       <nav className="md:hidden fixed bottom-0 left-0 right-0 z-40 bg-white/90 dark:bg-gray-900/90 backdrop-blur-lg border-t border-gray-200 dark:border-gray-700 safe-area-bottom">
@@ -80,7 +95,8 @@ export default function Navigation() {
         </div>
       </nav>
 
-      {/* Spacer for mobile bottom nav */}
+      {/* Spacers for mobile top header + bottom nav */}
+      <div className="md:hidden h-14" />
       <div className="md:hidden h-16" />
     </>
   );
