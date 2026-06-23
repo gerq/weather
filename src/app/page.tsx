@@ -5,6 +5,7 @@ import CurrentWeather from "@/components/CurrentWeather";
 import HourlyForecast from "@/components/HourlyForecast";
 import DailyForecast from "@/components/DailyForecast";
 import DressingTips from "@/components/DressingTips";
+import { useI18n } from "@/lib/i18n/context";
 import { Loader2, AlertCircle, CloudSun } from "lucide-react";
 
 export default function Home() {
@@ -18,6 +19,7 @@ export default function Home() {
     isDaytime,
     refresh,
   } = useWeather();
+  const { t } = useI18n();
 
   if (loading && !weather) {
     return (
@@ -26,7 +28,7 @@ export default function Home() {
           <CloudSun className="w-16 h-16 text-blue-400 animate-pulse mx-auto" />
           <Loader2 className="w-8 h-8 text-blue-500 animate-spin mx-auto" />
           <p className="text-gray-500 dark:text-gray-400 animate-pulse">
-            Időjárás adatok betöltése...
+            {t("weather.loading")}
           </p>
         </div>
       </div>
@@ -39,18 +41,17 @@ export default function Home() {
         <div className="text-center space-y-4 max-w-md">
           <AlertCircle className="w-16 h-16 text-red-400 mx-auto" />
           <h2 className="text-xl font-semibold text-gray-800 dark:text-white">
-            Hiba történt
+            {t("common.error")}
           </h2>
           <p className="text-gray-500 dark:text-gray-400">{error}</p>
           <p className="text-sm text-gray-400 dark:text-gray-500">
-            Ellenőrizd, hogy az OpenWeatherMap API kulcs be van-e állítva a
-            .env.local fájlban!
+            {t("weather.error.apiKey")}
           </p>
           <button
             onClick={refresh}
             className="px-6 py-3 rounded-xl bg-blue-500 text-white hover:bg-blue-600 transition-colors font-medium"
           >
-            Újrapróbálkozás
+            {t("common.retry")}
           </button>
         </div>
       </div>

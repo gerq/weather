@@ -3,6 +3,7 @@
 import { useWeather } from "@/hooks/useWeather";
 import MedicalMeteorologyComponent from "@/components/MedicalMeteorologyComponent";
 import CurrentWeather from "@/components/CurrentWeather";
+import { useI18n } from "@/lib/i18n/context";
 import { Heart, Loader2, AlertCircle, Info } from "lucide-react";
 
 export default function HealthPage() {
@@ -15,6 +16,7 @@ export default function HealthPage() {
     setLocation,
     refresh,
   } = useWeather();
+  const { t } = useI18n();
 
   if (loading && !weather) {
     return (
@@ -22,7 +24,7 @@ export default function HealthPage() {
         <div className="text-center space-y-4">
           <Loader2 className="w-8 h-8 text-blue-500 animate-spin mx-auto" />
           <p className="text-gray-500 dark:text-gray-400">
-            Orvosmeteorológiai adatok betöltése...
+            {t("health.loading")}
           </p>
         </div>
       </div>
@@ -41,10 +43,10 @@ export default function HealthPage() {
           </div>
           <div>
             <h1 className="text-xl font-bold text-gray-800 dark:text-white">
-              Orvosmeteorológia
+              {t("health.title")}
             </h1>
             <p className="text-sm text-gray-500 dark:text-gray-400">
-              Időjárás hatása az egészségre
+              {t("health.subtitle")}
             </p>
           </div>
         </div>
@@ -53,9 +55,7 @@ export default function HealthPage() {
         <div className="flex items-start gap-3 p-4 mb-4 rounded-xl bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800">
           <Info className="w-5 h-5 text-red-500 shrink-0 mt-0.5" />
           <p className="text-sm text-red-700 dark:text-red-300">
-            Az orvosmeteorológiai előrejelzés az aktuális időjárási adatok
-            alapján készül. Kérjük, súlyos egészségügyi problémák esetén
-            konzultálj orvosoddal!
+            {t("health.info")}
           </p>
         </div>
 

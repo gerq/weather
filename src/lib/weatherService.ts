@@ -3,7 +3,6 @@ import type { WeatherData, WeatherCurrent, HourlyForecast, DailyForecast, AirPol
 const API_KEY = process.env.NEXT_PUBLIC_OPENWEATHER_API_KEY || "";
 const BASE_URL = "https://api.openweathermap.org";
 const UNITS = "metric";
-const LANG = "hu";
 
 async function fetchApi<T>(url: string): Promise<T> {
   const response = await fetch(url);
@@ -15,7 +14,7 @@ async function fetchApi<T>(url: string): Promise<T> {
 
 export async function getCurrentWeather(lat: number, lon: number): Promise<WeatherCurrent> {
   const data = await fetchApi<any>(
-    `${BASE_URL}/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${API_KEY}&units=${UNITS}&lang=${LANG}`
+    `${BASE_URL}/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${API_KEY}&units=${UNITS}`
   );
 
   return {
@@ -43,7 +42,7 @@ export async function getCurrentWeather(lat: number, lon: number): Promise<Weath
 
 export async function getForecast(lat: number, lon: number): Promise<{ hourly: HourlyForecast[]; daily: DailyForecast[] }> {
   const data = await fetchApi<any>(
-    `${BASE_URL}/data/2.5/forecast?lat=${lat}&lon=${lon}&appid=${API_KEY}&units=${UNITS}&lang=${LANG}`
+    `${BASE_URL}/data/2.5/forecast?lat=${lat}&lon=${lon}&appid=${API_KEY}&units=${UNITS}`
   );
 
   // Csoportosítás napok szerint
@@ -127,7 +126,7 @@ export async function searchCity(query: string): Promise<GeocodingResult[]> {
   );
 
   return data.map((item: any) => ({
-    name: item.local_names?.hu || item.name,
+    name: item.name,
     lat: item.lat,
     lon: item.lon,
     country: item.country,
@@ -142,7 +141,7 @@ export async function getCityName(lat: number, lon: number): Promise<{ name: str
 
   if (data.length > 0) {
     return {
-      name: data[0].local_names?.hu || data[0].name,
+      name: data[0].name,
       country: data[0].country,
       state: data[0].state,
     };

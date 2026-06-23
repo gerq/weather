@@ -3,7 +3,9 @@
 import { MapPin, RefreshCw, Loader2 } from "lucide-react";
 import type { WeatherData } from "@/types/weather";
 import { formatTemp, getWeatherIconUrl, getWeatherDescription, formatTime, getWeatherBgClass } from "@/lib/utils";
+import { useI18n } from "@/lib/i18n/context";
 import SearchBar from "./SearchBar";
+import WeatherBackground from "./WeatherBackground";
 
 interface CurrentWeatherProps {
   weather: WeatherData;
@@ -15,13 +17,13 @@ interface CurrentWeatherProps {
 
 export default function CurrentWeather({ weather, loading, isDaytime, onRefresh, onLocationChange }: CurrentWeatherProps) {
   const { current, location } = weather;
+  const { t, dateFnsLocale } = useI18n();
   const bgClass = getWeatherBgClass(current.weather.id);
 
   return (
     <div className={`relative overflow-hidden rounded-3xl p-6 md:p-8 bg-gradient-to-br ${bgClass} text-white shadow-2xl`}>
-      {/* Background decoration */}
-      <div className="absolute top-0 right-0 w-64 h-64 bg-white/5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2" />
-      <div className="absolute bottom-0 left-0 w-48 h-48 bg-black/10 rounded-full blur-3xl translate-y-1/2 -translate-x-1/2" />
+      {/* Weather-based animated background */}
+      <WeatherBackground weatherId={current.weather.id} isDaytime={isDaytime} />
 
       {/* Header */}
       <div className="relative z-10 space-y-6">
@@ -52,10 +54,10 @@ export default function CurrentWeather({ weather, loading, isDaytime, onRefresh,
               {formatTemp(current.temp)}
             </div>
             <p className="text-lg text-white/80 mt-1">
-              Hőérzet: {formatTemp(current.feels_like)}
+              {t("weather.feelsLike")}: {formatTemp(current.feels_like)}
             </p>
             <p className="text-base text-white/90 mt-2 font-medium">
-              {getWeatherDescription(current.weather.description)}
+              {getWeatherDescription(current.weather.description, t)}
             </p>
           </div>
           <img
@@ -67,21 +69,21 @@ export default function CurrentWeather({ weather, loading, isDaytime, onRefresh,
 
         {/* Details grid */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-          <DetailCard label="Páratartalom" value={`${current.humidity}%`} />
-          <DetailCard label="Szél" value={`${Math.round(current.wind_speed)} km/h`} />
-          <DetailCard label="Légnyomás" value={`${current.pressure} hPa`} />
-          <DetailCard label="Felhőzet" value={`${current.clouds}%`} />
+          <DetailCard label={t("weather.humidity")} value={`${current.humidity}%`} />
+          <DetailCard label={t("weather.wind")} value={`${Math.round(current.wind_speed)} ${t("weather.windUnit")}`} />
+          <DetailCard label={t("weather.pressure")} value={`${current.pressure} ${t("weather.pressureUnit")}`} />
+          <DetailCard label={t("weather.clouds")} value={`${current.clouds}%`} />
         </div>
 
         {/* Sun info */}
         <div className="flex items-center justify-center gap-8 text-sm text-white/80">
           <div className="flex items-center gap-2">
             <span>🌅</span>
-            <span>Napkelte: {formatTime(current.sunrise)}</span>
+            <span>{t("weather.sunrise")}: {formatTime(current.sunrise)}</span>
           </div>
           <div className="flex items-center gap-2">
             <span>🌇</span>
-            <span>Napnyugta: {formatTime(current.sunset)}</span>
+            <span>{t("weather.sunset")}: {formatTime(current.sunset)}</span>
           </div>
         </div>
       </div>

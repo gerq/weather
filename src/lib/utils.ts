@@ -1,9 +1,10 @@
 import { format, fromUnixTime, isToday, isTomorrow } from "date-fns";
-import { hu } from "date-fns/locale";
+import type { Locale } from "date-fns";
 
-export function getWindDirection(deg: number): string {
-  const directions = ["É", "ÉK", "K", "DK", "D", "DNy", "Ny", "ÉNy"];
-  return directions[Math.round(deg / 45) % 8];
+export function getWindDirection(deg: number, t: (key: string, fallback?: string) => string): string {
+  const directions = ["N", "NE", "E", "SE", "S", "SW", "W", "NW"];
+  const key = directions[Math.round(deg / 45) % 8];
+  return t(`wind.${key}`, key);
 }
 
 export function formatTemp(temp: number): string {
@@ -14,68 +15,72 @@ export function formatTime(unixTimestamp: number): string {
   return format(fromUnixTime(unixTimestamp), "HH:mm");
 }
 
-export function formatDay(unixTimestamp: number): string {
+export function formatDay(unixTimestamp: number, t: (key: string, fallback?: string) => string, locale?: Locale): string {
   const date = fromUnixTime(unixTimestamp);
-  if (isToday(date)) return "Ma";
-  if (isTomorrow(date)) return "Holnap";
-  return format(date, "EEEE", { locale: hu });
+  if (isToday(date)) return t("common.today", "Today");
+  if (isTomorrow(date)) return t("common.tomorrow", "Tomorrow");
+  return format(date, "EEEE", { locale });
 }
 
-export function formatDate(unixTimestamp: number): string {
-  return format(fromUnixTime(unixTimestamp), "MMM d.", { locale: hu });
+export function formatDate(unixTimestamp: number, locale?: Locale): string {
+  return format(fromUnixTime(unixTimestamp), "MMM d.", { locale });
 }
 
 export function getWeatherIconUrl(icon: string): string {
   return `https://openweathermap.org/img/wn/${icon}@2x.png`;
 }
 
-export function getWeatherDescription(description: string): string {
-  // OpenWeatherMap leírások magyarítása
-  const translations: Record<string, string> = {
-    "clear sky": "Derült ég",
-    "few clouds": "Kevés felhő",
-    "scattered clouds": "Szórt felhőzet",
-    "broken clouds": "Részben felhős",
-    "overcast clouds": "Borult",
-    "light rain": "Könnyű eső",
-    "moderate rain": "Mérsékelt eső",
-    "heavy intensity rain": "Heves eső",
-    "very heavy rain": "Nagyon heves eső",
-    "extreme rain": "Extrém eső",
-    "freezing rain": "Ónos eső",
-    "light snow": "Könnyű hó",
-    snow: "Hó",
-    "heavy snow": "Erős havazás",
-    sleet: "Havas eső",
-    "light shower rain": "Könnyű zápor",
-    "shower rain": "Zápor",
-    "heavy intensity shower rain": "Heves zápor",
-    "thunderstorm": "Zivatar",
-    "thunderstorm with light rain": "Zivatar könnyű esővel",
-    "thunderstorm with heavy rain": "Zivatar heves esővel",
-    mist: "Köd",
-    fog: "Köd",
-    haze: "Párás",
-    smoke: "Füstös",
-    dust: "Poros",
-    sand: "Homokos",
-    "light intensity drizzle": "Könnyű szitálás",
-    drizzle: "Szitálás",
-    "heavy intensity drizzle": "Erős szitálás",
-  };
-  return translations[description.toLowerCase()] || description;
+const weatherTranslationKeys: Record<string, string> = {
+  "clear sky": `weather.clearSky`,
+  "few clouds": `weather.fewClouds`,
+  "scattered clouds": `weather.scatteredClouds`,
+  "broken clouds": `weather.brokenClouds`,
+  "overcast clouds": `weather.overcastClouds`,
+  "light rain": `weather.lightRain`,
+  "moderate rain": `weather.moderateRain`,
+  "heavy intensity rain": `weather.heavyRain`,
+  "very heavy rain": `weather.veryHeavyRain`,
+  "extreme rain": `weather.extremeRain`,
+  "freezing rain": `weather.freezingRain`,
+  "light snow": `weather.lightSnow`,
+  snow: `weather.snow`,
+  "heavy snow": `weather.heavySnow`,
+  sleet: `weather.sleet`,
+  "light shower rain": `weather.lightShower`,
+  "shower rain": `weather.shower`,
+  "heavy intensity shower rain": `weather.heavyShower`,
+  thunderstorm: `weather.thunderstorm`,
+  "thunderstorm with light rain": `weather.thunderstormLightRain`,
+  "thunderstorm with heavy rain": `weather.thunderstormHeavyRain`,
+  mist: `weather.mist`,
+  fog: `weather.fog`,
+  haze: `weather.haze`,
+  smoke: `weather.smoke`,
+  dust: `weather.dust`,
+  sand: `weather.sand`,
+  "light intensity drizzle": `weather.lightDrizzle`,
+  drizzle: `weather.drizzle`,
+  "heavy intensity drizzle": `weather.heavyDrizzle`,
+};
+
+export function getWeatherDescription(
+  description: string,
+  t: (key: string, fallback?: string) => string
+): string {
+  const key = weatherTranslationKeys[description.toLowerCase()];
+  if (key) return t(key, description);
+  return description;
 }
 
 export function getWeatherBgClass(weatherId: number): string {
-  // Visszaad egy gradient osztályt az időjárás ID alapján
-  if (weatherId >= 200 && weatherId < 300) return "from-purple-900 via-indigo-800 to-blue-900"; // Zivatar
-  if (weatherId >= 300 && weatherId < 400) return "from-blue-700 via-blue-600 to-gray-600"; // Szitálás
-  if (weatherId >= 500 && weatherId < 600) return "from-blue-800 via-gray-700 to-gray-800"; // Eső
-  if (weatherId >= 600 && weatherId < 700) return "from-blue-100 via-gray-200 to-white dark:from-gray-700 dark:via-gray-600 dark:to-blue-200"; // Hó
-  if (weatherId >= 700 && weatherId < 800) return "from-gray-500 via-gray-400 to-gray-600"; // Köd
-  if (weatherId === 800) return "from-blue-500 via-blue-400 to-blue-300 dark:from-blue-700 dark:via-blue-600 dark:to-blue-500"; // Derült
-  if (weatherId === 801) return "from-blue-400 via-blue-300 to-blue-200 dark:from-blue-700 dark:via-blue-600 dark:to-gray-600"; // Kevés felhő
-  return "from-blue-500 via-blue-400 to-gray-400 dark:from-gray-700 dark:via-gray-600 dark:to-gray-500"; // Felhős
+  if (weatherId >= 200 && weatherId < 300) return "from-purple-900 via-indigo-800 to-blue-900";
+  if (weatherId >= 300 && weatherId < 400) return "from-blue-700 via-blue-600 to-gray-600";
+  if (weatherId >= 500 && weatherId < 600) return "from-blue-800 via-gray-700 to-gray-800";
+  if (weatherId >= 600 && weatherId < 700) return "from-blue-100 via-gray-200 to-white dark:from-gray-700 dark:via-gray-600 dark:to-blue-200";
+  if (weatherId >= 700 && weatherId < 800) return "from-gray-500 via-gray-400 to-gray-600";
+  if (weatherId === 800) return "from-blue-500 via-blue-400 to-blue-300 dark:from-blue-700 dark:via-blue-600 dark:to-blue-500";
+  if (weatherId === 801) return "from-blue-400 via-blue-300 to-blue-200 dark:from-blue-700 dark:via-blue-600 dark:to-gray-600";
+  return "from-blue-500 via-blue-400 to-gray-400 dark:from-gray-700 dark:via-gray-600 dark:to-gray-500";
 }
 
 export function getHourlyIcon(weatherId: number): string {
@@ -89,9 +94,11 @@ export function getHourlyIcon(weatherId: number): string {
   return "cloud";
 }
 
-export function aqiToLabel(aqi: number): string {
-  const labels = ["", "Jó", "Megfelelő", "Mérsékelt", "Rossz", "Nagyon rossz"];
-  return labels[aqi] || "Ismeretlen";
+export function aqiToLabel(aqi: number, t: (key: string, fallback?: string) => string): string {
+  const keys = ["", "aqi.excellent", "aqi.good", "aqi.moderate", "aqi.poor", "aqi.veryPoor"];
+  const key = keys[aqi];
+  if (key) return t(key);
+  return t("aqi.unknown", "Unknown");
 }
 
 export function aqiToColor(aqi: number): string {

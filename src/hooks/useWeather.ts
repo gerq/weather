@@ -5,6 +5,7 @@ import type { WeatherData, DressingTip, MedicalMeteorologyData } from "@/types/w
 import { getCompleteWeatherData } from "@/lib/weatherService";
 import { getDressingTips } from "@/lib/dressingTips";
 import { getMedicalMeteorologyForWeather } from "@/lib/medicalMeteorology";
+import { useI18n } from "@/lib/i18n/context";
 
 interface UseWeatherReturn {
   weather: WeatherData | null;
@@ -25,6 +26,7 @@ export function useWeather(): UseWeatherReturn {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [location, setLocationState] = useState<{ lat: number; lon: number; name: string } | null>(null);
+  const { t } = useI18n();
 
   const fetchWeather = useCallback(async (lat: number, lon: number) => {
     setLoading(true);
@@ -33,7 +35,6 @@ export function useWeather(): UseWeatherReturn {
       const data = await getCompleteWeatherData(lat, lon);
       setWeather(data);
 
-      // Öltözködési tippek
       const now = Date.now() / 1000;
       const isDaytime = now > data.current.sunrise && now < data.current.sunset;
       const tips = getDressingTips(
@@ -42,11 +43,11 @@ export function useWeather(): UseWeatherReturn {
         data.current.humidity,
         data.current.wind_speed,
         data.current.weather.id,
-        isDaytime
+        isDaytime,
+        t
       );
       setDressingTips(tips);
 
-      // Orvosmeteorológia
       const medData = getMedicalMeteorologyForWeather(
         data.current.temp,
         data.current.humidity,
@@ -54,15 +55,16 @@ export function useWeather(): UseWeatherReturn {
         data.current.wind_speed,
         data.current.weather.id,
         data.airPollution?.aqi ?? null,
-        data.current.uvi
+        data.current.uvi,
+        t
       );
       setMedicalMeteorology(medData);
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Ismeretlen hiba történt");
+      setError(err instanceof Error ? err.message : t("common.error", "Ismeretlen hiba történt"));
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [t]);
 
   const setLocation = useCallback((lat: number, lon: number, name: string) => {
     setLocationState({ lat, lon, name });

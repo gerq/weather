@@ -1,6 +1,7 @@
 "use client";
 
 import { type DressingTip } from "@/types/weather";
+import { useI18n } from "@/lib/i18n/context";
 import { Thermometer, Umbrella, Wind, Sun, Snowflake, CloudLightning, Flame, AlertTriangle, Info } from "lucide-react";
 
 interface DressingTipsProps {
@@ -30,12 +31,13 @@ const severityIcon = {
 };
 
 export default function DressingTips({ tips }: DressingTipsProps) {
+  const { t } = useI18n();
   if (tips.length === 0) return null;
 
   return (
     <div className="bg-white dark:bg-gray-800/80 backdrop-blur-sm rounded-2xl p-5 shadow-lg">
       <h2 className="text-sm font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-4 flex items-center gap-2">
-        👔 Öltözködési tippek
+        {t("dressing.title")}
       </h2>
       <div className="space-y-3">
         {tips.map((tip, i) => (

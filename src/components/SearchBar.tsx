@@ -3,6 +3,7 @@
 import { useState, useRef, useEffect, useCallback } from "react";
 import { Search, Loader2, MapPin } from "lucide-react";
 import { searchCity } from "@/lib/weatherService";
+import { useI18n } from "@/lib/i18n/context";
 import type { GeocodingResult } from "@/types/weather";
 
 interface SearchBarProps {
@@ -72,15 +73,17 @@ export default function SearchBar({ onSelectLocation }: SearchBarProps) {
     setOpen(false);
   };
 
+  const { t } = useI18n();
+
   const handleDetectLocation = () => {
     if ("geolocation" in navigator) {
       navigator.geolocation.getCurrentPosition(
         (pos) => {
-          onSelectLocation(pos.coords.latitude, pos.coords.longitude, "Aktuális pozíció");
+          onSelectLocation(pos.coords.latitude, pos.coords.longitude, t("search.currentPosition"));
           setQuery("");
           setOpen(false);
         },
-        () => alert("Nem sikerült meghatározni a helyzetedet."),
+        () => alert(t("search.geoError")),
         { timeout: 10000 }
       );
     }
@@ -95,7 +98,7 @@ export default function SearchBar({ onSelectLocation }: SearchBarProps) {
             type="text"
             value={query}
             onChange={(e) => handleSearch(e.target.value)}
-            placeholder="Város keresése..."
+            placeholder={t("search.placeholder")}
             className="w-full pl-10 pr-4 py-3 rounded-xl bg-white/20 backdrop-blur-md border border-white/30 text-white placeholder-white/60 outline-none focus:ring-2 focus:ring-white/50 transition-all"
           />
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-white/70" />
@@ -106,8 +109,8 @@ export default function SearchBar({ onSelectLocation }: SearchBarProps) {
         <button
           onClick={handleDetectLocation}
           className="p-3 rounded-xl bg-white/20 backdrop-blur-md border border-white/30 hover:bg-white/30 transition-all shrink-0"
-          title="Aktuális helyzet"
-          aria-label="Aktuális helyzet meghatározása"
+          title={t("search.detectLocation")}
+          aria-label={t("search.detectLocation")}
         >
           <MapPin className="w-5 h-5 text-white" />
         </button>
@@ -117,7 +120,7 @@ export default function SearchBar({ onSelectLocation }: SearchBarProps) {
         <div
           className="absolute top-full mt-2 w-full rounded-xl bg-white/95 backdrop-blur-md shadow-xl border border-white/30 overflow-hidden z-50"
           role="listbox"
-          aria-label="Város találatok"
+          aria-label={t("search.resultsLabel")}
         >
           {results.map((city, i) => (
             <button

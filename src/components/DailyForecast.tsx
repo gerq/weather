@@ -2,6 +2,7 @@
 
 import type { DailyForecast as DailyForecastType } from "@/types/weather";
 import { formatTemp, formatDay, formatDate, getWindDirection, getWeatherIconUrl, getWeatherDescription } from "@/lib/utils";
+import { useI18n } from "@/lib/i18n/context";
 import { Droplets, Wind, Umbrella } from "lucide-react";
 
 interface DailyForecastProps {
@@ -9,10 +10,11 @@ interface DailyForecastProps {
 }
 
 export default function DailyForecast({ daily }: DailyForecastProps) {
+  const { t, dateFnsLocale } = useI18n();
   return (
     <div className="bg-white dark:bg-gray-800/80 backdrop-blur-sm rounded-2xl p-5 shadow-lg">
       <h2 className="text-sm font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-4">
-        7 napos előrejelzés
+        {t("daily.title")}
       </h2>
       <div className="space-y-1">
         {daily.map((day, i) => (
@@ -23,9 +25,9 @@ export default function DailyForecast({ daily }: DailyForecastProps) {
             {/* Day name */}
             <div className="w-16 shrink-0">
               <p className="text-sm font-medium text-gray-800 dark:text-white">
-                {i === 0 ? "Ma" : formatDay(day.dt)}
+                {formatDay(day.dt, t, dateFnsLocale)}
               </p>
-              <p className="text-xs text-gray-400">{formatDate(day.dt)}</p>
+              <p className="text-xs text-gray-400">{formatDate(day.dt, dateFnsLocale)}</p>
             </div>
 
             {/* Weather icon */}
@@ -37,7 +39,7 @@ export default function DailyForecast({ daily }: DailyForecastProps) {
 
             {/* Description */}
             <p className="text-sm text-gray-600 dark:text-gray-300 flex-1 hidden md:block truncate">
-              {getWeatherDescription(day.weather.description)}
+              {getWeatherDescription(day.weather.description, t)}
             </p>
 
             {/* Extra info */}
@@ -48,7 +50,7 @@ export default function DailyForecast({ daily }: DailyForecastProps) {
               </span>
               <span className="flex items-center gap-1">
                 <Wind className="w-3 h-3" />
-                {getWindDirection(day.wind_deg)} {Math.round(day.wind_speed)}
+                {getWindDirection(day.wind_deg, t)} {Math.round(day.wind_speed)}
               </span>
               {day.pop > 0 && (
                 <span className="flex items-center gap-1 text-blue-500">

@@ -3,15 +3,20 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { CloudSun, Map as MapIcon, Heart, Home } from "lucide-react";
+import { useI18n } from "@/lib/i18n/context";
 
-const navItems = [
-  { href: "/", label: "Időjárás", icon: Home },
-  { href: "/map", label: "Térkép", icon: MapIcon },
-  { href: "/health", label: "Egészség", icon: Heart },
-];
+function useNavItems() {
+  const { t } = useI18n();
+  return [
+    { href: "/", label: t("nav.weather"), icon: Home },
+    { href: "/map", label: t("nav.map"), icon: MapIcon },
+    { href: "/health", label: t("nav.health"), icon: Heart },
+  ];
+}
 
 export default function Navigation() {
   const pathname = usePathname();
+  const navItems = useNavItems();
 
   return (
     <>
@@ -48,69 +53,30 @@ export default function Navigation() {
       {/* Mobile bottom nav */}
       <nav className="md:hidden fixed bottom-0 left-0 right-0 z-40 bg-white/90 dark:bg-gray-900/90 backdrop-blur-lg border-t border-gray-200 dark:border-gray-700 safe-area-bottom">
         <div className="flex items-center justify-around py-2 px-4">
-          <Link
-            href="/"
-            className="flex flex-col items-center gap-0.5 px-4 py-1 min-w-0"
-          >
-            <Home
-              className={`w-5 h-5 ${
-                pathname === "/"
-                  ? "text-blue-500"
-                  : "text-gray-400 dark:text-gray-500"
-              }`}
-            />
-            <span
-              className={`text-[10px] font-medium ${
-                pathname === "/"
-                  ? "text-blue-500"
-                  : "text-gray-400 dark:text-gray-500"
-              }`}
+          {navItems.map((item) => (
+            <Link
+              key={item.href}
+              href={item.href}
+              className="flex flex-col items-center gap-0.5 px-4 py-1 min-w-0"
             >
-              Időjárás
-            </span>
-          </Link>
-          <Link
-            href="/map"
-            className="flex flex-col items-center gap-0.5 px-4 py-1 min-w-0"
-          >
-            <MapIcon
-              className={`w-5 h-5 ${
-                pathname === "/map"
-                  ? "text-blue-500"
-                  : "text-gray-400 dark:text-gray-500"
-              }`}
-            />
-            <span
-              className={`text-[10px] font-medium ${
-                pathname === "/map"
-                  ? "text-blue-500"
-                  : "text-gray-400 dark:text-gray-500"
-              }`}
-            >
-              Térkép
-            </span>
-          </Link>
-          <Link
-            href="/health"
-            className="flex flex-col items-center gap-0.5 px-4 py-1 min-w-0"
-          >
-            <Heart
-              className={`w-5 h-5 ${
-                pathname === "/health"
-                  ? "text-blue-500"
-                  : "text-gray-400 dark:text-gray-500"
-              }`}
-            />
-            <span
-              className={`text-[10px] font-medium ${
-                pathname === "/health"
-                  ? "text-blue-500"
-                  : "text-gray-400 dark:text-gray-500"
-              }`}
-            >
-              Egészség
-            </span>
-          </Link>
+              <item.icon
+                className={`w-5 h-5 ${
+                  pathname === item.href
+                    ? "text-blue-500"
+                    : "text-gray-400 dark:text-gray-500"
+                }`}
+              />
+              <span
+                className={`text-[10px] font-medium ${
+                  pathname === item.href
+                    ? "text-blue-500"
+                    : "text-gray-400 dark:text-gray-500"
+                }`}
+              >
+                {item.label}
+              </span>
+            </Link>
+          ))}
         </div>
       </nav>
 
