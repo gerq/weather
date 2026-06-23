@@ -1,4 +1,5 @@
-const CACHE_NAME = "weather-app-v1";
+const SW_VERSION = "1.0.0";
+const CACHE_NAME = `weather-app-${SW_VERSION}`;
 
 const PRECACHE_URLS = [
   "/",
@@ -9,8 +10,9 @@ const PRECACHE_URLS = [
   "/icons/icon-512x512.png",
 ];
 
-// Install: cache the app shell
+// Install: take over immediately + cache the app shell
 self.addEventListener("install", (event) => {
+  self.skipWaiting();
   event.waitUntil(
     caches.open(CACHE_NAME).then((cache) => {
       return cache.addAll(PRECACHE_URLS);
@@ -18,17 +20,27 @@ self.addEventListener("install", (event) => {
   );
 });
 
-// Activate: clean old caches
+// Activate: claim all clients + clean old caches
 self.addEventListener("activate", (event) => {
   event.waitUntil(
-    caches.keys().then((cacheNames) => {
-      return Promise.all(
-        cacheNames
-          .filter((name) => name !== CACHE_NAME)
-          .map((name) => caches.delete(name))
-      );
-    })
+    Promise.all([
+      self.clients.claim(),
+      caches.keys().then((cacheNames) => {
+        return Promise.all(
+          cacheNames
+            .filter((name) => name !== CACHE_NAME)
+            .map((name) => caches.delete(name))
+        );
+      }),
+    ])
   );
+});
+
+// Listen for SKIP_WAITING message from the page
+self.addEventListener("message", (event) => {
+  if (event.data?.type === "SKIP_WAITING") {
+    self.skipWaiting();
+  }
 });
 
 // Fetch: cache-first for static, network-first for API
