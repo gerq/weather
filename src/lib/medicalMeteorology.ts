@@ -33,7 +33,7 @@ export function computeMedicalMeteorology(
 ): MedicalMeteorologyData {
   const { temp, humidity, pressure, windSpeed, weatherId, aqi, uvi, season } = input;
 
-  // General well-being score (1-10)
+  // ── General well-being score (1-10) ──
   let generalScore = 7;
 
   if (temp > 30 || temp < -5) generalScore -= 2;
@@ -49,9 +49,12 @@ export function computeMedicalMeteorology(
 
   if (aqi && aqi > 3) generalScore -= aqi - 2;
 
+  // UV hatás az általános közérzetre
+  if (uvi > 7) generalScore -= 1;
+
   generalScore = Math.max(1, Math.min(10, generalScore));
 
-  // Headache risk
+  // ── Fejfájás kockázata ──
   let headacheScore = 0;
   if (pressure < 1005 || pressure > 1020) headacheScore += 2;
   if (humidity > 75) headacheScore += 1;
@@ -59,21 +62,39 @@ export function computeMedicalMeteorology(
   if (windSpeed > 15) headacheScore += 1;
   if (season === "spring" || season === "autumn") headacheScore += 1;
 
-  // Joint pain risk
+  // Hőhullám / kánikula hatása a fejfájásra
+  if (temp > 32) headacheScore += 3;       // extrém hő -> erős trigger
+  else if (temp > 28) headacheScore += 2;  // nagy hőség
+  else if (temp > 25) headacheScore += 1;  // meleg
+
+  // UV sugárzás (fényérzékenység) fejfájás trigger
+  if (uvi > 7) headacheScore += 2;
+  else if (uvi > 5) headacheScore += 1;
+
+  // Fülledt hőség (magas hőmérséklet + magas páratartalom)
+  if (temp > 28 && humidity > 60) headacheScore += 1;
+
+  // ── Ízületi fájdalom kockázata ──
   let jointScore = 0;
   if (pressure < 1005) jointScore += 2;
   if (humidity > 75) jointScore += 2;
   if (temp < 5) jointScore += 1;
   if (weatherId >= 500 && weatherId < 600) jointScore += 1;
 
-  // Cardiovascular stress
+  // ── Szív-érrendszeri terhelés ──
   let cardioScore = 0;
-  if (temp > 30 || temp < -5) cardioScore += 2;
-  if (temp > 25 || temp < 0) cardioScore += 1;
+  if (temp > 32 || temp < -5) cardioScore += 3;  // extrém hő nagyobb terhelés
+  else if (temp > 28 || temp < 0) cardioScore += 2;
+  else if (temp > 25) cardioScore += 1;
+
   if (humidity > 80) cardioScore += 1;
   if (weatherId >= 200 && weatherId < 300) cardioScore += 1;
+  if (uvi > 8) cardioScore += 1;   // extrém UV plusz terhelés
 
-  // Asthma risk
+  // Fülledtség extra keringési terhelés
+  if (temp > 28 && humidity > 65) cardioScore += 1;
+
+  // ── Asztma kockázata ──
   let asthmaScore = 0;
   if (aqi && aqi > 2) asthmaScore += aqi - 1;
   if (humidity > 80) asthmaScore += 1;
@@ -81,7 +102,7 @@ export function computeMedicalMeteorology(
   if (season === "spring") asthmaScore += 1;
   if (weatherId >= 700 && weatherId < 800) asthmaScore += 1;
 
-  // Air quality label
+  // ── Levegőminőség ──
   let airQualityLabel: string;
   let recommendation: string;
 
@@ -92,7 +113,7 @@ export function computeMedicalMeteorology(
     airQualityLabel = t(aqiKeys[aqi] || "aqi.unknown");
   }
 
-  // General recommendation
+  // ── Általános ajánlás ──
   if (generalScore <= 3) {
     recommendation = t("medical.recommendationBad");
   } else if (generalScore <= 5) {
@@ -111,7 +132,12 @@ export function computeMedicalMeteorology(
     recommendation += t("medical.uvWarning");
   }
 
-  // General feeling labels
+  // Hőségriasztás az ajánláshoz
+  if (temp > 32) {
+    recommendation += " " + t("medical.heatWarning");
+  }
+
+  // ── General feeling ──
   let generalLabel: string;
   let generalDescription: string;
   if (generalScore >= 8) {
@@ -136,9 +162,9 @@ export function computeMedicalMeteorology(
     },
     headacheRisk: {
       level: getLevel(headacheScore),
-      description: headacheScore >= 5
+      description: headacheScore >= 7
         ? t("medical.headacheHighDesc")
-        : headacheScore >= 3
+        : headacheScore >= 4
         ? t("medical.headacheMediumDesc")
         : t("medical.headacheLowDesc"),
     },
@@ -152,9 +178,9 @@ export function computeMedicalMeteorology(
     },
     cardiovascularStress: {
       level: getLevel(cardioScore),
-      description: cardioScore >= 4
+      description: cardioScore >= 5
         ? t("medical.cardioHighDesc")
-        : cardioScore >= 2
+        : cardioScore >= 3
         ? t("medical.cardioMediumDesc")
         : t("medical.cardioLowDesc"),
     },

@@ -169,6 +169,7 @@ const hu: TranslationDict = {
   "medical.recommendationModerate": "Az időjárás mérsékelten hat a közérzetedre. A megszokott tevékenységeidet végezheted.",
   "medical.frontWarning": " Frontérzékenyek fokozott tünetekre számíthatnak!",
   "medical.uvWarning": " UV sugárzás: használj naptejet és viselj napszemüveget!",
+  "medical.heatWarning": " Hőségriadó! Kerüld a tűző napot, fogyassz sok folyadékot és tartózkodj árnyékban/hűvös helyen.",
 
   // Wind directions
   "wind.N": "É",
@@ -375,6 +376,7 @@ const en: TranslationDict = {
   "medical.recommendationModerate": "Weather moderately affects your well-being. You can continue your usual activities.",
   "medical.frontWarning": " Weather-sensitive people may experience increased symptoms!",
   "medical.uvWarning": " UV radiation: use sunscreen and wear sunglasses!",
+  "medical.heatWarning": " Heat warning! Avoid direct sun, stay hydrated and seek shade or air-conditioned places.",
 
   "wind.N": "N",
   "wind.NE": "NE",
@@ -578,6 +580,7 @@ const de: TranslationDict = {
   "medical.recommendationModerate": "Das Wetter beeinflusst dein Befinden mäßig. Du kannst deine gewohnten Aktivitäten ausführen.",
   "medical.frontWarning": " Wetterfühlige Menschen können verstärkte Symptome erwarten!",
   "medical.uvWarning": " UV-Strahlung: Verwende Sonnencreme und trage eine Sonnenbrille!",
+  "medical.heatWarning": " Hitzewarnung! Meide die direkte Sonne, trinke ausreichend und halte dich im Schatten/kühlen Räumen auf.",
 
   "wind.N": "N",
   "wind.NE": "NO",
