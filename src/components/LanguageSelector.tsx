@@ -11,7 +11,7 @@ const languages: { code: Language }[] = [
   { code: "de" },
 ];
 
-export default function LanguageSelector() {
+export default function LanguageSelector({ variant = "default" }: { variant?: "default" | "header" }) {
   const { locale, setLocale, t } = useI18n();
   const [open, setOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
@@ -27,10 +27,14 @@ export default function LanguageSelector() {
   }, []);
 
   return (
-    <div ref={ref} className="fixed top-4 right-16 z-50">
+    <div ref={ref} className={variant === "header" ? "relative" : "fixed top-4 right-16 z-50"}>
       <button
         onClick={() => setOpen(!open)}
-        className="p-3 rounded-full bg-white/20 backdrop-blur-md border border-white/30 shadow-lg hover:scale-110 active:scale-95 transition-all duration-300"
+        className={
+          variant === "header"
+            ? "p-2 rounded-lg hover:bg-white/20 dark:hover:bg-gray-700 transition-all duration-300"
+            : "p-3 rounded-full bg-white/20 backdrop-blur-md border border-white/30 shadow-lg hover:scale-110 active:scale-95 transition-all duration-300"
+        }
         aria-label={t("common.loading") !== "common.loading" ? "Nyelv választás" : "Language"}
       >
         <Languages className="w-5 h-5 dark:text-white text-slate-700" />

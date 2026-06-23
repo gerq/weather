@@ -4,7 +4,7 @@ import { Sun, Moon } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useI18n } from "@/lib/i18n/context";
 
-export default function ThemeToggle() {
+export default function ThemeToggle({ variant = "default" }: { variant?: "default" | "header" }) {
   const [dark, setDark] = useState(false);
   const { t } = useI18n();
 
@@ -26,7 +26,11 @@ export default function ThemeToggle() {
   return (
     <button
       onClick={toggle}
-      className="fixed top-4 right-4 z-50 p-3 rounded-full bg-white/20 backdrop-blur-md border border-white/30 shadow-lg hover:scale-110 active:scale-95 transition-all duration-300"
+      className={
+        variant === "header"
+          ? "p-2 rounded-lg hover:bg-white/20 dark:hover:bg-gray-700 transition-all duration-300"
+          : "fixed top-4 right-4 z-50 p-3 rounded-full bg-white/20 backdrop-blur-md border border-white/30 shadow-lg hover:scale-110 active:scale-95 transition-all duration-300"
+      }
       aria-label={dark ? t("theme.switchToLight") : t("theme.switchToDark")}
     >
       {dark ? (

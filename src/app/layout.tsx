@@ -61,8 +61,12 @@ export default async function RootLayout({
       <body className="min-h-dvh bg-[var(--background)] text-[var(--foreground)] pt-[env(safe-area-inset-top)] pb-[env(safe-area-inset-bottom)]">
         <LanguageProvider initialLocale={initialLocale}>
           <HtmlLangSetter />
-          <ThemeToggle />
-          <LanguageSelector />
+          <div className="hidden md:block">
+            <ThemeToggle />
+          </div>
+          <div className="hidden md:block">
+            <LanguageSelector />
+          </div>
           <Navigation />
           <PWARegistration />
           <main className="md:ml-20 pt-14 pb-16 md:pt-0 md:pb-0">

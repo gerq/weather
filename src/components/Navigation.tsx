@@ -4,6 +4,8 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { CloudSun, Map as MapIcon, Heart, Home } from "lucide-react";
 import { useI18n } from "@/lib/i18n/context";
+import ThemeToggle from "./ThemeToggle";
+import LanguageSelector from "./LanguageSelector";
 
 function useNavItems() {
   const { t } = useI18n();
@@ -61,6 +63,10 @@ export default function Navigation() {
             <span className="text-base font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent dark:from-blue-400 dark:to-purple-400">
               gWeather
             </span>
+          </div>
+          <div className="flex items-center gap-1">
+            <ThemeToggle variant="header" />
+            <LanguageSelector variant="header" />
           </div>
         </div>
       </div>
