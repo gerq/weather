@@ -64,7 +64,7 @@ export default async function RootLayout({
           <LanguageSelector />
           <Navigation />
           <PWARegistration />
-          <main className="md:ml-20 pb-0">
+          <main className="md:ml-20 pt-14 pb-16 md:pt-0 md:pb-0">
             {children}
           </main>
         </LanguageProvider>

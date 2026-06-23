@@ -1,16 +1,17 @@
 "use client";
 
 import { useState, useRef, useEffect, useCallback } from "react";
-import { Search, Loader2, MapPin } from "lucide-react";
+import { Search, Loader2, MapPin, X } from "lucide-react";
 import { searchCity } from "@/lib/weatherService";
 import { useI18n } from "@/lib/i18n/context";
 import type { GeocodingResult } from "@/types/weather";
 
 interface SearchBarProps {
   onSelectLocation: (lat: number, lon: number, name: string) => void;
+  onClose?: () => void;
 }
 
-export default function SearchBar({ onSelectLocation }: SearchBarProps) {
+export default function SearchBar({ onSelectLocation, onClose }: SearchBarProps) {
   const [query, setQuery] = useState("");
   const [results, setResults] = useState<GeocodingResult[]>([]);
   const [open, setOpen] = useState(false);
@@ -19,15 +20,21 @@ export default function SearchBar({ onSelectLocation }: SearchBarProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const debounceRef = useRef<NodeJS.Timeout | null>(null);
 
+  // Auto-focus input when component mounts
+  useEffect(() => {
+    inputRef.current?.focus();
+  }, []);
+
   useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {
       if (containerRef.current && !containerRef.current.contains(e.target as Node)) {
         setOpen(false);
+        onClose?.();
       }
     };
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, []);
+  }, [onClose]);
 
   // Cleanup debounce on unmount
   useEffect(() => {
@@ -71,6 +78,7 @@ export default function SearchBar({ onSelectLocation }: SearchBarProps) {
     setQuery(city.name);
     onSelectLocation(city.lat, city.lon, displayName);
     setOpen(false);
+    onClose?.();
   };
 
   const { t } = useI18n();
@@ -82,6 +90,7 @@ export default function SearchBar({ onSelectLocation }: SearchBarProps) {
           onSelectLocation(pos.coords.latitude, pos.coords.longitude, t("search.currentPosition"));
           setQuery("");
           setOpen(false);
+          onClose?.();
         },
         () => alert(t("search.geoError")),
         { timeout: 10000 }
@@ -99,12 +108,18 @@ export default function SearchBar({ onSelectLocation }: SearchBarProps) {
             value={query}
             onChange={(e) => handleSearch(e.target.value)}
             placeholder={t("search.placeholder")}
-            className="w-full pl-10 pr-4 py-3 rounded-xl bg-white/20 backdrop-blur-md border border-white/30 text-white placeholder-white/60 outline-none focus:ring-2 focus:ring-white/50 transition-all"
+            className="w-full pl-10 pr-10 py-3 rounded-xl bg-white/20 backdrop-blur-md border border-white/30 text-white placeholder-white/60 outline-none focus:ring-2 focus:ring-white/50 transition-all"
           />
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-white/70" />
           {loading && (
-            <Loader2 className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-white/70 animate-spin" />
-          )}
+            <Loader2 className="absolute right-10 top-1/2 -translate-y-1/2 w-4 h-4 text-white/70 animate-spin" />
+          )}            <button
+            onClick={() => onClose?.()}
+            className="absolute right-3 top-1/2 -translate-y-1/2 p-1 rounded-lg hover:bg-white/20 transition-colors text-white/70 hover:text-white"
+            aria-label={t("common.close")}
+          >
+            <X className="w-4 h-4" />
+          </button>
         </div>
         <button
           onClick={handleDetectLocation}
@@ -118,7 +133,7 @@ export default function SearchBar({ onSelectLocation }: SearchBarProps) {
 
       {open && results.length > 0 && (
         <div
-          className="absolute top-full mt-2 w-full rounded-xl bg-white/95 backdrop-blur-md shadow-xl border border-white/30 overflow-hidden z-50"
+          className="absolute top-full mt-2 w-full rounded-xl bg-white/95 backdrop-blur-md shadow-xl border border-white/30 overflow-y-auto z-50 max-h-60"
           role="listbox"
           aria-label={t("search.resultsLabel")}
         >

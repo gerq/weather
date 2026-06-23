@@ -11,6 +11,7 @@ const hu: TranslationDict = {
   "common.error": "Hiba történt",
   "common.save": "Mentés",
   "common.cancel": "Mégse",
+  "common.close": "Bezárás",
 
   // Nav
   "nav.weather": "Időjárás",
@@ -48,6 +49,7 @@ const hu: TranslationDict = {
   "search.detectLocation": "Aktuális helyzet",
   "search.geoError": "Nem sikerült meghatározni a helyzetedet.",
   "search.resultsLabel": "Város találatok",
+  "search.changeLocation": "Helyszín módosítása",
 
   // Hourly
   "hourly.title": "Órás előrejelzés",
@@ -232,6 +234,7 @@ const en: TranslationDict = {
   "common.error": "Something went wrong",
   "common.save": "Save",
   "common.cancel": "Cancel",
+  "common.close": "Close",
 
   "nav.weather": "Weather",
   "nav.map": "Map",
@@ -263,6 +266,7 @@ const en: TranslationDict = {
   "search.detectLocation": "Current location",
   "search.geoError": "Could not determine your location.",
   "search.resultsLabel": "City results",
+  "search.changeLocation": "Change location",
 
   "hourly.title": "Hourly forecast",
   "hourly.now": "Now",
@@ -436,6 +440,7 @@ const de: TranslationDict = {
   "common.error": "Ein Fehler ist aufgetreten",
   "common.save": "Speichern",
   "common.cancel": "Abbrechen",
+  "common.close": "Schließen",
 
   "nav.weather": "Wetter",
   "nav.map": "Karte",
@@ -467,6 +472,7 @@ const de: TranslationDict = {
   "search.detectLocation": "Aktueller Standort",
   "search.geoError": "Standort konnte nicht ermittelt werden.",
   "search.resultsLabel": "Suchergebnisse",
+  "search.changeLocation": "Standort ändern",
 
   "hourly.title": "Stündliche Vorhersage",
   "hourly.now": "Jetzt",

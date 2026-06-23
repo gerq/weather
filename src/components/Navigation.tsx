@@ -94,10 +94,6 @@ export default function Navigation() {
           ))}
         </div>
       </nav>
-
-      {/* Spacers for mobile top header + bottom nav */}
-      <div className="md:hidden h-14" />
-      <div className="md:hidden h-16" />
     </>
   );
 }

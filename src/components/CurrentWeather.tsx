@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import { MapPin, RefreshCw, Loader2 } from "lucide-react";
 import type { WeatherData } from "@/types/weather";
 import { formatTemp, getWeatherIconUrl, getWeatherDescription, formatTime, getWeatherBgClass } from "@/lib/utils";
@@ -19,20 +20,42 @@ export default function CurrentWeather({ weather, loading, isDaytime, onRefresh,
   const { current, location } = weather;
   const { t, dateFnsLocale } = useI18n();
   const bgClass = getWeatherBgClass(current.weather.id);
+  const [showSearch, setShowSearch] = useState(false);
+
+  const handleSelectLocation = (lat: number, lon: number, name: string) => {
+    onLocationChange(lat, lon, name);
+    setShowSearch(false);
+  };
+
+  const handleCloseSearch = () => {
+    setShowSearch(false);
+  };
 
   return (
-    <div className={`relative overflow-hidden rounded-3xl p-6 md:p-8 bg-gradient-to-br ${bgClass} text-white shadow-2xl`}>
-      {/* Weather-based animated background */}
-      <WeatherBackground weatherId={current.weather.id} isDaytime={isDaytime} />
+    <div className={`relative rounded-3xl p-6 md:p-8 bg-gradient-to-br ${bgClass} text-white shadow-2xl`}>
+      {/* Weather-based animated background — clipped corners separately so search dropdown isn't clipped */}
+      <div className="absolute inset-0 rounded-3xl overflow-hidden pointer-events-none">
+        <WeatherBackground weatherId={current.weather.id} isDaytime={isDaytime} />
+      </div>
 
       {/* Header */}
       <div className="relative z-10 space-y-6">
         {/* Top bar */}
         <div className="flex items-center justify-between gap-4">
-          <div className="flex items-center gap-2 min-w-0">
-            <MapPin className="w-5 h-5 shrink-0" />
-            <h1 className="text-lg font-semibold truncate">{location.name}</h1>
-          </div>
+          {!showSearch ? (
+            <button
+              onClick={() => setShowSearch(true)}
+              className="flex items-center gap-2 min-w-0 hover:opacity-80 transition-opacity text-left"
+              aria-label={t("search.changeLocation")}
+            >
+              <MapPin className="w-5 h-5 shrink-0" />
+              <h1 className="text-lg font-semibold truncate">{location.name}</h1>
+            </button>
+          ) : (
+            <div className="flex-1 animate-fade-in relative z-[100]">
+              <SearchBar onSelectLocation={handleSelectLocation} onClose={handleCloseSearch} />
+            </div>
+          )}
           <div className="flex items-center gap-2 shrink-0">
             <button
               onClick={onRefresh}
@@ -43,9 +66,6 @@ export default function CurrentWeather({ weather, loading, isDaytime, onRefresh,
             </button>
           </div>
         </div>
-
-        {/* Search */}
-        <SearchBar onSelectLocation={onLocationChange} />
 
         {/* Main weather info */}
         <div className="flex items-center justify-between">
