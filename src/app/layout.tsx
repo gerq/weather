@@ -35,6 +35,7 @@ export const metadata: Metadata = {
 export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
+  viewportFit: "cover",
   themeColor: [
     { media: "(prefers-color-scheme: light)", color: "#f0f4f8" },
     { media: "(prefers-color-scheme: dark)", color: "#0f172a" },
@@ -57,7 +58,7 @@ export default async function RootLayout({
         <meta name="apple-mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
       </head>
-      <body className="min-h-full bg-[var(--background)] text-[var(--foreground)]">
+      <body className="min-h-dvh bg-[var(--background)] text-[var(--foreground)] pt-[env(safe-area-inset-top)] pb-[env(safe-area-inset-bottom)]">
         <LanguageProvider initialLocale={initialLocale}>
           <HtmlLangSetter />
           <ThemeToggle />
