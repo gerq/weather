@@ -2,6 +2,13 @@
 
 @custom-variant dark (&:is(.dark *));
 
+/* Flag icon fix for white parts on light backgrounds */
+.fi {
+  display: inline-block;
+  border-radius: 4px;
+  box-shadow: inset 0 0 0 1.5px rgba(0, 0, 0, 0.06);
+}
+
 :root {
   --background: #f0f4f8;
   --foreground: #1a202c;
