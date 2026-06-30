@@ -1,0 +1,137 @@
+"use client";
+
+import { useEffect, useState } from "react";
+import "@khmyznikov/pwa-install";
+import { useI18n } from "@/lib/i18n/context";
+import { Download } from "lucide-react";
+
+export default function PwaInstallPrompt() {
+  const [isStandalone, setIsStandalone] = useState(false);
+  const [isAvailable, setIsAvailable] = useState(false);
+  const [dismissed, setDismissed] = useState(false);
+  const [checking, setChecking] = useState(true); // prevent flash on mount
+  const { t } = useI18n();
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+
+    // Check if already in standalone mode (app installed)
+    const isStandaloneMode =
+      window.matchMedia("(display-mode: standalone)").matches ||
+      (window.navigator as any).standalone === true;
+    setIsStandalone(isStandaloneMode);
+
+    setDismissed(localStorage.getItem("pwa-install-dismissed") === "true");
+  }, []);
+
+  // Listen for the pwa-install web component's availability event
+  useEffect(() => {
+    if (isStandalone || dismissed) return;
+
+    const handleAvailable = () => {
+      setIsAvailable(true);
+      setChecking(false);
+    };
+
+    const handleSuccess = () => {
+      setIsStandalone(true);
+      localStorage.setItem("pwa-install-dismissed", "true");
+    };
+
+    document.addEventListener("pwa-install-available-event", handleAvailable);
+    document.addEventListener("pwa-install-success-event", handleSuccess);
+
+    // Check after a delay in case the event already fired
+    const timer = setTimeout(() => {
+      const el = document.querySelector("pwa-install") as any;
+      if (el?.isInstallAvailable) {
+        setIsAvailable(true);
+      }
+      setChecking(false);
+    }, 2000);
+
+    return () => {
+      document.removeEventListener("pwa-install-available-event", handleAvailable);
+      document.removeEventListener("pwa-install-success-event", handleSuccess);
+      clearTimeout(timer);
+    };
+  }, [isStandalone, dismissed]);
+
+  const handleInstallClick = () => {
+    (document.querySelector("pwa-install") as any)?.showDialog();
+  };
+
+  const handleDismiss = () => {
+    setDismissed(true);
+    localStorage.setItem("pwa-install-dismissed", "true");
+  };
+
+  // Don't render on server, don't show if standalone, dismissed, or still checking
+  if (isStandalone || dismissed || checking) return null;
+
+  return (
+    <>
+      {/* The web component that handles the actual install dialog */}
+      <pwa-install
+        manifest-url="/manifest.json"
+        use-local-storage
+        className="fixed -left-[9999px] top-0"
+      ></pwa-install>
+
+      {/* Custom install banner */}
+      {isAvailable && (
+        <div className="fixed bottom-20 md:bottom-6 left-4 right-4 md:left-auto md:right-6 md:w-80 z-[60] animate-slide-up">
+          <div className="relative bg-white dark:bg-gray-800 rounded-2xl shadow-2xl border border-gray-200 dark:border-gray-700 p-4 backdrop-blur-sm">
+            {/* Close button */}
+            <button
+              onClick={handleDismiss}
+              className="absolute top-2 right-2 p-1 rounded-full text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
+              aria-label="Close"
+            >
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                <path d="M4 4L12 12M12 4L4 12" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+              </svg>
+            </button>
+
+            <div className="flex items-start gap-3">
+              {/* App icon */}
+              <div className="shrink-0 w-12 h-12 rounded-xl overflow-hidden shadow-md">
+                <img
+                  src="/icons/icon-192x192.png"
+                  alt="gWeather"
+                  className="w-full h-full object-cover"
+                />
+              </div>
+
+              <div className="flex-1 min-w-0">
+                <h3 className="font-semibold text-sm text-gray-900 dark:text-white">
+                  {t("pwaInstall.title", "Telepítsd az alkalmazást")}
+                </h3>
+                <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5 line-clamp-2">
+                  {t("pwaInstall.description", "Gyorsabb hozzáférés, offline használat, jobb élmény.")}
+                </p>
+              </div>
+            </div>
+
+            {/* Actions */}
+            <div className="flex items-center gap-2 mt-3">
+              <button
+                onClick={handleInstallClick}
+                className="flex-1 flex items-center justify-center gap-1.5 px-4 py-2.5 bg-blue-500 hover:bg-blue-600 active:bg-blue-700 text-white text-sm font-medium rounded-xl transition-all active:scale-95"
+              >
+                <Download className="w-4 h-4" />
+                {t("pwaInstall.install", "Telepítés")}
+              </button>
+              <button
+                onClick={handleDismiss}
+                className="px-4 py-2.5 text-sm font-medium text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-xl transition-colors"
+              >
+                {t("common.cancel", "Mégse")}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+    </>
+  );
+}

@@ -59,6 +59,12 @@ const hu: TranslationDict = {
   "daily.title": "7 napos előrejelzés",
 
   // Dressing
+  // PWA Install
+  "pwaInstall.title": "Telepítsd az alkalmazást",
+  "pwaInstall.description": "Gyorsabb hozzáférés, offline használat, jobb élmény.",
+  "pwaInstall.install": "Telepítés",
+  "pwaInstall.dismiss": "Most nem",
+
   // Pull to refresh
   "pullToRefresh.pull": "Húzd le a frissítéshez",
   "pullToRefresh.release": "Engedd el a frissítéshez",
@@ -279,6 +285,12 @@ const en: TranslationDict = {
 
   "daily.title": "7-day forecast",
 
+  // PWA Install
+  "pwaInstall.title": "Install the app",
+  "pwaInstall.description": "Faster access, offline use, better experience.",
+  "pwaInstall.install": "Install",
+  "pwaInstall.dismiss": "Not now",
+
   // Pull to refresh
   "pullToRefresh.pull": "Pull down to refresh",
   "pullToRefresh.release": "Release to refresh",
@@ -490,6 +502,12 @@ const de: TranslationDict = {
   "hourly.now": "Jetzt",
 
   "daily.title": "7-Tage-Vorhersage",
+
+  // PWA Install
+  "pwaInstall.title": "App installieren",
+  "pwaInstall.description": "Schnellerer Zugriff, Offline-Nutzung, besseres Erlebnis.",
+  "pwaInstall.install": "Installieren",
+  "pwaInstall.dismiss": "Jetzt nicht",
 
   // Pull to refresh
   "pullToRefresh.pull": "Zum Aktualisieren nach unten ziehen",

@@ -6,6 +6,7 @@ import Navigation from "@/components/Navigation";
 import ThemeToggle from "@/components/ThemeToggle";
 import LanguageSelector from "@/components/LanguageSelector";
 import PWARegistration from "@/components/PWARegistration";
+import PwaInstallPrompt from "@/components/PwaInstallPrompt";
 import { LanguageProvider } from "@/lib/i18n/context";
 import type { Language } from "@/lib/i18n/translations";
 import HtmlLangSetter from "@/components/HtmlLangSetter";
@@ -55,6 +56,7 @@ export default async function RootLayout({
   return (
     <html lang={initialLocale} className="h-full">
       <head>
+        <link rel="icon" type="image/svg+xml" href="/icons/icon.svg" />
         <link rel="apple-touch-icon" href="/icons/icon-192x192.png" />
         <meta name="apple-mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
@@ -70,6 +72,7 @@ export default async function RootLayout({
           </div>
           <Navigation />
           <PWARegistration />
+          <PwaInstallPrompt />
           <main className="md:ml-20 pt-14 pb-16 md:pt-0 md:pb-0">
             {children}
           </main>
