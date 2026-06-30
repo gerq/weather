@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { createPortal } from "react-dom";
 import "@khmyznikov/pwa-install";
 import { useI18n } from "@/lib/i18n/context";
 import { Download } from "lucide-react";
@@ -66,17 +67,27 @@ export default function PwaInstallPrompt() {
     localStorage.setItem("pwa-install-dismissed", "true");
   };
 
-  // Don't render on server, don't show if standalone, dismissed, or still checking
-  if (isStandalone || dismissed || checking) return null;
+  // Portal mindig renderelődjön, hogy a <pwa-install> a DOM-ban legyen
+  // amint a komponens felcsatlakozott — így az eseményei azonnal elsülhetnek
+  const pwaInstallPortal = typeof document !== "undefined"
+    ? createPortal(
+        <pwa-install
+          manifest-url="/manifest.json"
+          use-local-storage
+          className="fixed -left-[9999px] top-0"
+        ></pwa-install>,
+        document.body
+      )
+    : null;
+
+  // Ha standalone, dismissed vagy még checking, csak a portált rendereljük
+  if (isStandalone || dismissed || checking) {
+    return <>{pwaInstallPortal}</>;
+  }
 
   return (
     <>
-      {/* The web component that handles the actual install dialog */}
-      <pwa-install
-        manifest-url="/manifest.json"
-        use-local-storage
-        className="fixed -left-[9999px] top-0"
-      ></pwa-install>
+      {pwaInstallPortal}
 
       {/* Custom install banner */}
       {isAvailable && (
