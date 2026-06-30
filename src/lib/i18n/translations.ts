@@ -59,6 +59,12 @@ const hu: TranslationDict = {
   "daily.title": "7 napos előrejelzés",
 
   // Dressing
+  // Pull to refresh
+  "pullToRefresh.pull": "Húzd le a frissítéshez",
+  "pullToRefresh.release": "Engedd el a frissítéshez",
+  "pullToRefresh.refreshing": "Frissítés...",
+  "pullToRefresh.updated": "Adatok frissítve!",
+
   "dressing.title": "👔 Öltözködési tippek",
 
   // Dressing tips content
@@ -273,6 +279,12 @@ const en: TranslationDict = {
 
   "daily.title": "7-day forecast",
 
+  // Pull to refresh
+  "pullToRefresh.pull": "Pull down to refresh",
+  "pullToRefresh.release": "Release to refresh",
+  "pullToRefresh.refreshing": "Refreshing...",
+  "pullToRefresh.updated": "Data updated!",
+
   "dressing.title": "👔 Dressing tips",
 
   "dressing.baseLayer": "Base Layer",
@@ -478,6 +490,12 @@ const de: TranslationDict = {
   "hourly.now": "Jetzt",
 
   "daily.title": "7-Tage-Vorhersage",
+
+  // Pull to refresh
+  "pullToRefresh.pull": "Zum Aktualisieren nach unten ziehen",
+  "pullToRefresh.release": "Loslassen zum Aktualisieren",
+  "pullToRefresh.refreshing": "Aktualisiere...",
+  "pullToRefresh.updated": "Daten aktualisiert!",
 
   "dressing.title": "👔 Kleidungstipps",
 

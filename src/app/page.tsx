@@ -5,6 +5,7 @@ import CurrentWeather from "@/components/CurrentWeather";
 import HourlyForecast from "@/components/HourlyForecast";
 import DailyForecast from "@/components/DailyForecast";
 import DressingTips from "@/components/DressingTips";
+import PullToRefresh from "@/components/PullToRefresh";
 import { useI18n } from "@/lib/i18n/context";
 import { Loader2, AlertCircle, CloudSun } from "lucide-react";
 
@@ -61,34 +62,36 @@ export default function Home() {
   if (!weather) return null;
 
   return (
-    <div className="min-h-screen">
-      {/* Hero section with current weather */}
-      <div className="p-4 md:p-6 space-y-4 max-w-4xl mx-auto">
-        <div className="animate-fade-in">
-          <CurrentWeather
-            weather={weather}
-            loading={loading}
-            isDaytime={isDaytime}
-            onRefresh={refresh}
-            onLocationChange={setLocation}
-          />
-        </div>
-
-        {/* Hourly + Dressing tips row */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
-          <div className="lg:col-span-2 animate-fade-in-delay-1 h-full">
-            <HourlyForecast hourly={weather.hourly} />
+    <PullToRefresh onRefresh={refresh} refreshing={loading}>
+      <div className="min-h-screen">
+        {/* Hero section with current weather */}
+        <div className="p-4 md:p-6 space-y-4 max-w-4xl mx-auto">
+          <div className="animate-fade-in">
+            <CurrentWeather
+              weather={weather}
+              loading={loading}
+              isDaytime={isDaytime}
+              onRefresh={refresh}
+              onLocationChange={setLocation}
+            />
           </div>
-          <div className="animate-fade-in-delay-1">
-            <DressingTips tips={dressingTips} />
-          </div>
-        </div>
 
-        {/* Daily forecast */}
-        <div className="animate-fade-in-delay-2">
-          <DailyForecast daily={weather.daily} />
+          {/* Hourly + Dressing tips row */}
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+            <div className="lg:col-span-2 animate-fade-in-delay-1 h-full">
+              <HourlyForecast hourly={weather.hourly} />
+            </div>
+            <div className="animate-fade-in-delay-1">
+              <DressingTips tips={dressingTips} />
+            </div>
+          </div>
+
+          {/* Daily forecast */}
+          <div className="animate-fade-in-delay-2">
+            <DailyForecast daily={weather.daily} />
+          </div>
         </div>
       </div>
-    </div>
+    </PullToRefresh>
   );
 }
