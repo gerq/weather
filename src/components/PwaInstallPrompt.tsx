@@ -82,8 +82,9 @@ export default function PwaInstallPrompt() {
       )
     : null;
 
-  // Ha standalone, dismissed vagy még checking, csak a portált rendereljük
-  if (isStandalone || dismissed || checking) {
+  // Ha standalone vagy dismissed, csak a portált rendereljük
+  // Még checking állapotban is mutatjuk a bannert ha elérhető
+  if (isStandalone || dismissed) {
     return <>{pwaInstallPortal}</>;
   }
 
@@ -93,8 +94,8 @@ export default function PwaInstallPrompt() {
 
       {/* Custom install banner */}
       {isAvailable && (
-        <div className="fixed bottom-20 md:bottom-6 left-4 right-4 md:left-auto md:right-6 md:w-80 z-[100] animate-slide-up">
-          <div className="relative bg-white dark:bg-gray-800 rounded-2xl shadow-2xl border border-gray-200 dark:border-gray-700 p-4 backdrop-blur-sm">
+        <div className="fixed bottom-24 md:bottom-6 left-4 right-4 md:left-auto md:right-6 md:w-80 z-[9999] animate-slide-up">
+          <div className="relative bg-white dark:bg-gray-800 rounded-2xl shadow-2xl border border-gray-200 dark:border-gray-700 p-4">
             {/* Close button */}
             <button
               onClick={handleDismiss}

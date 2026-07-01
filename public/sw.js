@@ -1,4 +1,4 @@
-const SW_VERSION = "1.1.2";
+const SW_VERSION = "1.1.3";
 const CACHE_NAME = `weather-app-${SW_VERSION}`;
 
 const PRECACHE_URLS = [
