@@ -80,8 +80,12 @@ export default function CurrentWeather({ weather, loading, isDaytime, onRefresh,
               {getWeatherDescription(current.weather.description, t)}
             </p>
           </div>
+          import { getWeatherIconUrlForPullToRefresh } from "@/lib/utils";
+
+          // ...
+
           <img
-            src={getWeatherIconUrl(current.weather.icon)}
+            src={getWeatherIconUrlForPullToRefresh(current.weather.icon)}
             alt={current.weather.description}
             className="w-28 h-28 md:w-32 md:h-32 -mr-2 drop-shadow-lg"
           />

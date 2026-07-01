@@ -108,10 +108,14 @@ export default function PullToRefresh({ onRefresh, refreshing, children }: PullT
   const progress = Math.min(pullDistance / THRESHOLD, 1);
   const arrowRotation = pullDistance * 2.5;
 
-  const getIndicatorText = () => {
+  const getIndicatorText = (weatherId: number) => {
     if (pullState === "refreshing") return t("pullToRefresh.refreshing");
     if (pullState === "done") return t("pullToRefresh.updated");
-    if (pullState === "threshold") return t("pullToRefresh.release");
+    if (pullState === "threshold") {
+      if (weatherId >= 200 && weatherId < 300) return t("pullToRefresh.stormRelease");
+      if (weatherId >= 500 && weatherId < 600) return t("pullToRefresh.rainRelease");
+      return t("pullToRefresh.release");
+    }
     return t("pullToRefresh.pull");
   };
 
