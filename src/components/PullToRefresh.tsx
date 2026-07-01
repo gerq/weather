@@ -111,9 +111,7 @@ export default function PullToRefresh({ onRefresh, refreshing, children }: PullT
   const getIndicatorText = () => {
     if (pullState === "refreshing") return t("pullToRefresh.refreshing");
     if (pullState === "done") return t("pullToRefresh.updated");
-    if (pullState === "threshold") {
-      return t("pullToRefresh.release");
-    }
+    if (pullState === "threshold") return t("pullToRefresh.release");
     return t("pullToRefresh.pull");
   };
 
