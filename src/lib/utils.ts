@@ -29,6 +29,9 @@ export function formatDate(unixTimestamp: number, locale?: Locale): string {
 export function getWeatherIconUrl(icon: string): string {
   return `https://openweathermap.org/img/wn/${icon}@2x.png`;
 }
+export function getWeatherIconUrlForPullToRefresh(icon: string): string {
+  return `https://openweathermap.org/img/wn/${icon}@2x.png`;
+}
 
 const weatherTranslationKeys: Record<string, string> = {
   "clear sky": `weather.clearSky`,
