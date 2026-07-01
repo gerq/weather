@@ -74,7 +74,9 @@ export default function PwaInstallPrompt() {
         <pwa-install
           manifest-url="/manifest.json"
           use-local-storage
-          className="fixed -left-[9999px] top-0"
+          manual-apple="true"
+          manual-desktop="true"
+          className="fixed bottom-0 right-0 z-[99999]"
         ></pwa-install>,
         document.body
       )
@@ -91,7 +93,7 @@ export default function PwaInstallPrompt() {
 
       {/* Custom install banner */}
       {isAvailable && (
-        <div className="fixed bottom-20 md:bottom-6 left-4 right-4 md:left-auto md:right-6 md:w-80 z-[60] animate-slide-up">
+        <div className="fixed bottom-20 md:bottom-6 left-4 right-4 md:left-auto md:right-6 md:w-80 z-[100] animate-slide-up">
           <div className="relative bg-white dark:bg-gray-800 rounded-2xl shadow-2xl border border-gray-200 dark:border-gray-700 p-4 backdrop-blur-sm">
             {/* Close button */}
             <button
