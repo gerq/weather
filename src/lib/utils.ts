@@ -76,14 +76,15 @@ export function getWeatherDescription(
 }
 
 export function getWeatherBgClass(weatherId: number): string {
-  if (weatherId >= 200 && weatherId < 300) return "from-purple-900 via-indigo-800 to-blue-900";
-  if (weatherId >= 300 && weatherId < 400) return "from-blue-700 via-blue-600 to-gray-600";
-  if (weatherId >= 500 && weatherId < 600) return "from-blue-800 via-gray-700 to-gray-800";
-  if (weatherId >= 600 && weatherId < 700) return "from-blue-100 via-gray-200 to-white dark:from-gray-700 dark:via-gray-600 dark:to-blue-200";
-  if (weatherId >= 700 && weatherId < 800) return "from-gray-500 via-gray-400 to-gray-600";
-  if (weatherId === 800) return "from-blue-500 via-blue-400 to-blue-300 dark:from-blue-700 dark:via-blue-600 dark:to-blue-500";
-  if (weatherId === 801) return "from-blue-400 via-blue-300 to-blue-200 dark:from-blue-700 dark:via-blue-600 dark:to-gray-600";
-  return "from-blue-500 via-blue-400 to-gray-400 dark:from-gray-700 dark:via-gray-600 dark:to-gray-500";
+  if (weatherId >= 200 && weatherId < 300) return "from-purple-900 via-indigo-800 to-blue-900"; // Thunderstorm
+  if (weatherId >= 300 && weatherId < 400) return "from-blue-700 via-blue-600 to-gray-600"; // Drizzle
+  if (weatherId >= 500 && weatherId < 600) return "from-blue-800 via-gray-700 to-gray-800"; // Rain
+  if (weatherId >= 600 && weatherId < 700) return "from-blue-100 via-gray-200 to-white dark:from-gray-700 dark:via-gray-600 dark:to-blue-200"; // Snow
+  if (weatherId >= 700 && weatherId < 800) return "from-gray-500 via-gray-400 to-gray-600"; // Atmosphere (mist, fog, etc.)
+  if (weatherId === 800) return "from-blue-500 via-blue-400 to-blue-300 dark:from-blue-700 dark:via-blue-600 dark:to-blue-500"; // Clear sky
+  if (weatherId === 801) return "from-blue-400 via-blue-300 to-blue-200 dark:from-blue-700 dark:via-blue-600 dark:to-gray-600"; // Few clouds
+  if (weatherId >= 802 && weatherId <= 804) return "from-gray-400 via-gray-500 to-gray-600 dark:from-gray-600 dark:via-gray-700 dark:to-gray-800"; // Clouds
+  return "from-blue-500 via-blue-400 to-gray-400 dark:from-gray-700 dark:via-gray-600 dark:to-gray-500"; // Default
 }
 
 export function getHourlyIcon(weatherId: number): string {
