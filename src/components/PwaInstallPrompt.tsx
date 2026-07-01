@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { createPortal } from "react-dom";
 import "@khmyznikov/pwa-install";
 import { useI18n } from "@/lib/i18n/context";
@@ -38,11 +38,18 @@ function safeSetItem(key: string, value: string): void {
 }
 
 export default function PwaInstallPrompt() {
+  const [mounted, setMounted] = useState(false);
   const [isStandalone, setIsStandalone] = useState(false);
   const [isAvailable, setIsAvailable] = useState(false);
   const [dismissed, setDismissed] = useState(false);
   const [showInstructions, setShowInstructions] = useState(false);
   const { t } = useI18n();
+
+  // Mark as mounted after hydration so we can safely render client-only
+  // content (like portals to document.body) without causing a mismatch.
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   useEffect(() => {
     if (typeof window === "undefined") return;
@@ -117,20 +124,28 @@ export default function PwaInstallPrompt() {
     safeSetItem("pwa-install-dismissed", "true");
   };
 
-  // Portal mindig renderelődjön, hogy a <pwa-install> a DOM-ban legyen
-  // amint a komponens felcsatlakozott — így az eseményei azonnal elsülhetnek
-  const pwaInstallPortal = typeof document !== "undefined"
-    ? createPortal(
-        <pwa-install
-          manifest-url="/manifest.json"
-          use-local-storage
-          manual-apple="true"
-          manual-desktop="true"
-          className="fixed bottom-0 right-0 z-[99999]"
-        ></pwa-install>,
-        document.body
-      )
-    : null;
+  // Only render the <pwa-install> portal after hydration (mounted=true)
+  // to avoid hydration mismatch — the server can't render portals
+  // to document.body, so the first client render must also skip it.
+  const pwaInstallPortal = useMemo(() => {
+    if (!mounted) return null;
+    return createPortal(
+      <pwa-install
+        manifest-url="/manifest.json"
+        use-local-storage
+        manual-apple="true"
+        manual-desktop="true"
+        className="fixed bottom-0 right-0 z-[99999]"
+      ></pwa-install>,
+      document.body
+    );
+  }, [mounted]);
+
+  // Also prevent rendering the install banner during SSR/hydration,
+  // since it uses non-deterministic client-only state (localStorage, matchMedia)
+  if (!mounted) {
+    return <>{pwaInstallPortal}</>;
+  }
 
   if (isStandalone || dismissed) {
     return <>{pwaInstallPortal}</>;
