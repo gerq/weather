@@ -65,6 +65,14 @@ const hu: TranslationDict = {
   "pwaInstall.install": "Telepítés",
   "pwaInstall.dismiss": "Most nem",
 
+  // PWA Install - iOS instructions (in-app browser fallback)
+  "pwaInstall.iosInstructions.title": "Nyisd meg Safariban",
+  "pwaInstall.iosInstructions.description": "Az alkalmazás telepítéséhez nyisd meg ezt az oldalt a Safari böngészőben, majd használd a Megosztás gombot a kezdőképernyőhöz adáshoz.",
+  "pwaInstall.iosInstructions.step1": "Nyisd meg az oldalt Safariban",
+  "pwaInstall.iosInstructions.step2": "Koppints a Megosztás ikonra 📤",
+  "pwaInstall.iosInstructions.step3": "Görgess le és válaszd a 'Kezdőképernyőhöz' lehetőséget",
+  "pwaInstall.iosInstructions.step4": "Koppints a 'Hozzáadás' gombra",
+
   // Pull to refresh
   "pullToRefresh.pull": "Húzd le a frissítéshez",
   "pullToRefresh.release": "Engedd el a frissítéshez",
@@ -291,6 +299,14 @@ const en: TranslationDict = {
   "pwaInstall.install": "Install",
   "pwaInstall.dismiss": "Not now",
 
+  // PWA Install - iOS instructions (in-app browser fallback)
+  "pwaInstall.iosInstructions.title": "Open in Safari",
+  "pwaInstall.iosInstructions.description": "To install the app, open this page in Safari, then use the Share button to add it to your home screen.",
+  "pwaInstall.iosInstructions.step1": "Open this page in Safari",
+  "pwaInstall.iosInstructions.step2": "Tap the Share icon 📤",
+  "pwaInstall.iosInstructions.step3": "Scroll down and select 'Add to Home Screen'",
+  "pwaInstall.iosInstructions.step4": "Tap 'Add' button",
+
   // Pull to refresh
   "pullToRefresh.pull": "Pull down to refresh",
   "pullToRefresh.release": "Release to refresh",
@@ -508,6 +524,14 @@ const de: TranslationDict = {
   "pwaInstall.description": "Schnellerer Zugriff, Offline-Nutzung, besseres Erlebnis.",
   "pwaInstall.install": "Installieren",
   "pwaInstall.dismiss": "Jetzt nicht",
+
+  // PWA Install - iOS instructions (in-app browser fallback)
+  "pwaInstall.iosInstructions.title": "In Safari öffnen",
+  "pwaInstall.iosInstructions.description": "Öffne diese Seite in Safari und füge sie über den Teilen-Button zum Startbildschirm hinzu.",
+  "pwaInstall.iosInstructions.step1": "Öffne diese Seite in Safari",
+  "pwaInstall.iosInstructions.step2": "Tippe auf das Teilen-Symbol 📤",
+  "pwaInstall.iosInstructions.step3": "Scrolle runter und wähle 'Zum Startbildschirm'",
+  "pwaInstall.iosInstructions.step4": "Tippe auf 'Hinzufügen'",
 
   // Pull to refresh
   "pullToRefresh.pull": "Zum Aktualisieren nach unten ziehen",
