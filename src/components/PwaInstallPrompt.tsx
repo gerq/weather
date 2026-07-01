@@ -6,11 +6,34 @@ import "@khmyznikov/pwa-install";
 import { useI18n } from "@/lib/i18n/context";
 import { Download } from "lucide-react";
 
+function isIOS(): boolean {
+  if (typeof navigator === "undefined") return false;
+  return (
+    /iPad|iPhone|iPod/.test(navigator.userAgent) ||
+    (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1)
+  );
+}
+
+function safeGetItem(key: string): string | null {
+  try {
+    return localStorage.getItem(key);
+  } catch {
+    return null;
+  }
+}
+
+function safeSetItem(key: string, value: string): void {
+  try {
+    localStorage.setItem(key, value);
+  } catch {
+    // Silently fail — e.g. Safari private browsing
+  }
+}
+
 export default function PwaInstallPrompt() {
   const [isStandalone, setIsStandalone] = useState(false);
   const [isAvailable, setIsAvailable] = useState(false);
   const [dismissed, setDismissed] = useState(false);
-  const [checking, setChecking] = useState(true); // prevent flash on mount
   const { t } = useI18n();
 
   useEffect(() => {
@@ -22,39 +45,52 @@ export default function PwaInstallPrompt() {
       (window.navigator as any).standalone === true;
     setIsStandalone(isStandaloneMode);
 
-    setDismissed(localStorage.getItem("pwa-install-dismissed") === "true");
+    setDismissed(safeGetItem("pwa-install-dismissed") === "true");
   }, []);
 
   // Listen for the pwa-install web component's availability event
+  // PLUS a platform-independent iOS fallback
   useEffect(() => {
     if (isStandalone || dismissed) return;
 
     const handleAvailable = () => {
       setIsAvailable(true);
-      setChecking(false);
     };
 
     const handleSuccess = () => {
       setIsStandalone(true);
-      localStorage.setItem("pwa-install-dismissed", "true");
+      safeSetItem("pwa-install-dismissed", "true");
     };
 
     document.addEventListener("pwa-install-available-event", handleAvailable);
     document.addEventListener("pwa-install-success-event", handleSuccess);
 
-    // Check after a delay in case the event already fired
-    const timer = setTimeout(() => {
+    // Platform-independent fallback timers
+    const eventTimer = setTimeout(() => {
       const el = document.querySelector("pwa-install") as any;
       if (el?.isInstallAvailable) {
         setIsAvailable(true);
+        return;
       }
-      setChecking(false);
-    }, 2000);
+      // If no event after 3s AND on iOS (no beforeinstallprompt),
+      // assume installable — all sites can be added to home screen
+      if (isIOS()) {
+        setIsAvailable(true);
+      }
+    }, 3000);
+
+    // iOS first-show after 1s for a snappy feel
+    const iosTimer = setTimeout(() => {
+      if (isIOS()) {
+        setIsAvailable(true);
+      }
+    }, 1000);
 
     return () => {
       document.removeEventListener("pwa-install-available-event", handleAvailable);
       document.removeEventListener("pwa-install-success-event", handleSuccess);
-      clearTimeout(timer);
+      clearTimeout(eventTimer);
+      clearTimeout(iosTimer);
     };
   }, [isStandalone, dismissed]);
 
@@ -64,7 +100,7 @@ export default function PwaInstallPrompt() {
 
   const handleDismiss = () => {
     setDismissed(true);
-    localStorage.setItem("pwa-install-dismissed", "true");
+    safeSetItem("pwa-install-dismissed", "true");
   };
 
   // Portal mindig renderelődjön, hogy a <pwa-install> a DOM-ban legyen
@@ -82,8 +118,6 @@ export default function PwaInstallPrompt() {
       )
     : null;
 
-  // Ha standalone vagy dismissed, csak a portált rendereljük
-  // Még checking állapotban is mutatjuk a bannert ha elérhető
   if (isStandalone || dismissed) {
     return <>{pwaInstallPortal}</>;
   }
@@ -92,7 +126,6 @@ export default function PwaInstallPrompt() {
     <>
       {pwaInstallPortal}
 
-      {/* Custom install banner */}
       {isAvailable && (
         <div className="fixed bottom-24 md:bottom-6 left-4 right-4 md:left-auto md:right-6 md:w-80 z-[9999] animate-slide-up">
           <div className="relative bg-white dark:bg-gray-800 rounded-2xl shadow-2xl border border-gray-200 dark:border-gray-700 p-4">
